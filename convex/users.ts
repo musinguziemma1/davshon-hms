@@ -44,7 +44,15 @@ export const create = mutation({
       .first();
     if (existing) throw new Error("Email already exists");
 
-    return await ctx.db.insert("users", { ...args, isActive: true });
+    const { passwordHash, ...rest } = args;
+    const now = Date.now();
+    return await ctx.db.insert("users", { 
+      ...rest, 
+      password: passwordHash,
+      isActive: true,
+      createdAt: now,
+      updatedAt: now
+    });
   },
 });
 
